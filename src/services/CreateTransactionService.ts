@@ -15,13 +15,13 @@ class CreateTransactionService {
   }
 
   public execute({ title, value, type }: Request): Transaction {
-    if (type !== 'income' && type !== 'outcome') {
-      throw Error('Transaction type is invalid in this operator!');
+    if (!['income', 'outcome'].includes(type)) {
+      throw new Error('Transaction type is invalid in this operator!');
     }
     const balance = this.transactionsRepository.getBalance();
 
     if (type === 'outcome' && balance.total < value) {
-      throw Error('Insufficient funds');
+      throw new Error('Insufficient funds');
     }
 
     const transaction = this.transactionsRepository.create({
